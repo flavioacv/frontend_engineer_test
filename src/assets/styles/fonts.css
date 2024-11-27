@@ -1,0 +1,22 @@
+@font-face {
+    font-family: 'TTCommons';
+    src: url('@/assets/fonts/TTCommonsTtl-Bold.woff2') format('woff2');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'TTCommons';
+    src: url('@/assets/fonts/TTCommonsTtl-DemiBold.woff2') format('woff2');
+    font-weight: 600;
+    /* DemiBold */
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'TTCommons';
+    src: url('@/assets/fonts/TTCommonsTtl-Medium.woff2') format('woff2');
+    font-weight: 500;
+    /* Medium */
+    font-style: normal;
+}
