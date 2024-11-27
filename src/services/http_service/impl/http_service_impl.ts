@@ -17,18 +17,41 @@ export default class HttpServiceImpl implements HttpService {
     }
 
     async get<T = any>(url: string, params?: Record<string, any>): Promise<T> {
-        const response = await this.axiosInstance.get<T>(url, { params });
-        return response.data;
+        try {
+            const response = await this.axiosInstance.get<T>(url, { params });
+            return response.data;
+        } catch (error) {
+            if (this.isAxiosError(error)) {
+                this.handleHttpError(error);
+            }
+            throw error;
+        }
     }
 
     async post<T = any>(url: string, data: any, params?: Record<string, any>): Promise<T> {
-        const response = await this.axiosInstance.post<T>(url, data, { params });
-        return response.data;
+        try {
+            const response = await this.axiosInstance.post<T>(url, data, { params });
+            return response.data;
+        } catch (error) {
+            if (this.isAxiosError(error)) {
+                this.handleHttpError(error);
+            }
+            throw error;
+        }
     }
 
     async put<T = any>(url: string, data: any, params?: Record<string, any>): Promise<T> {
-        const response = await this.axiosInstance.put<T>(url, data, { params });
-        return response.data;
+
+        try {
+
+            const response = await this.axiosInstance.put<T>(url, data, { params });
+            return response.data;
+        } catch (error) {
+            if (this.isAxiosError(error)) {
+                this.handleHttpError(error);
+            }
+            throw error;
+        }
     }
 
     async delete<T = any>(url: string, params?: Record<string, any>): Promise<T> {
