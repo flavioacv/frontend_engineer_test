@@ -3,6 +3,7 @@ import type CategoryRepository from "@/repositories/category_repository";
 import { useCategoryStore } from "@/stores/category_store";
 
 
+
 export default class CategoryController {
     private categoryRepository: CategoryRepository;
     private categoryStore = useCategoryStore();
