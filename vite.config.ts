@@ -10,9 +10,22 @@ export default defineConfig({
     vue(),
     vueDevTools(),
   ],
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './vitest.setup.ts',
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
-    },
+    },extensions: [
+      ".js",
+      ".json",
+      ".jsx",
+      ".mjs",
+      ".ts",
+      ".tsx",
+      ".vue",
+    ],
   },
 })
