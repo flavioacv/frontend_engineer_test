@@ -1,4 +1,4 @@
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import AppException from '@/exception/app_exception';
 import axios, { AxiosError, type AxiosInstance } from 'axios';
 import type HttpService from '../http_service';
