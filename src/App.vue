@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
+import { setupCategoryInjection } from './injects/category_inject';
+
+// Chama a configuração de injeção
+setupCategoryInjection();
+
 </script>
 
-<template>    
+<template>
   <RouterView />
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

@@ -41,11 +41,10 @@ import HeaderCustom from '@/components/HeaderCustomComponent.vue'; // Importa o 
 import Shimmer from '@/components/ShimmerComponent.vue';
 import CategoryController from '@/controllers/category_controller';
 import { useCategoryStore } from '@/stores/category_store';
-import { computed, onMounted } from 'vue';
+import { computed, inject, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 
-const categoryController = new CategoryController();
 
 // Instância do Vue Router
 const router = useRouter();
@@ -58,6 +57,10 @@ const categorias = computed(() => categoryStore.getCategory);
 const isLoading = computed(() => categoryStore.isLoading);
 
 onMounted(async () => {
+  const categoryController = inject<CategoryController>('categoryController');
+    if (!categoryController) {
+      throw new Error('CategoryController não foi provido!');
+    }
   await categoryController.loadCategories();
 })
 
