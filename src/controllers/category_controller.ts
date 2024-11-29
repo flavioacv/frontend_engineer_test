@@ -1,14 +1,16 @@
 import AppException from "@/exception/app_exception";
-import CategoryRepositoryImpl from "@/repositories/impl/category_repository_impl";
-import HttpServiceImpl from "@/services/http_service/impl/http_service_impl";
+import type CategoryRepository from "@/repositories/category_repository";
+
 import { useCategoryStore } from "@/stores/category_store";
 
 
 
 export default class CategoryController {
-  private httpService = new HttpServiceImpl();
-  private categoryRepository = new CategoryRepositoryImpl(this.httpService);
+  private categoryRepository: CategoryRepository;
   private categoryStore = useCategoryStore();
+  constructor(categoryRepository: CategoryRepository) {
+    this.categoryRepository = categoryRepository;
+  }
 
 
   // getCategory(refresh: Boolean = false) {
@@ -23,7 +25,7 @@ export default class CategoryController {
       this.categoryStore.isLoading = true;
       this.categoryStore.error = null;
       try {
-        const categories = await this.categoryRepository.getCategory();
+        const categories = await this.categoryRepository.getCategories();
         this.categoryStore.setCategories(categories);
       } catch (error) {
         if (error instanceof AppException) {
