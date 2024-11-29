@@ -8,10 +8,10 @@ import type HttpService from '../http_service';
 export default class HttpServiceImpl implements HttpService {
   private axiosInstance: AxiosInstance;
 
-  constructor(baseURL: string = 'https://8cwbug3w72.execute-api.us-east-1.amazonaws.com/flavio/') {
+  constructor(baseURL: string = import.meta.env.VITE_API_BASE_URL, token: string = import.meta.env.VITE_API_TOKEN) {
     this.axiosInstance = axios.create({
       baseURL, headers: {
-        "Authorization": "Basic q9kEGw4qs8LdXg42d3RIvVcFgqC5v830P"
+        "Authorization": `Basic ${token}`
       }
     });
   }
