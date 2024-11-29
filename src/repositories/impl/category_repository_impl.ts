@@ -13,8 +13,7 @@ export default class CategoryRepositoryImpl implements CategoryRepository {
     this.httpService = httpService;
   }
 
-
-  async getCategory(): Promise<CategoryModel[]> {
+  async getCategories(): Promise<CategoryModel[]> {
     try {
       const rawCategories = await this.httpService.get<any[]>('/categories');
       const categories = rawCategories.map(CategoryModel.fromMap);
@@ -31,5 +30,12 @@ export default class CategoryRepositoryImpl implements CategoryRepository {
       //Re-lança erros não tratados
       throw error;
     }
+  }
+
+  createCategory(): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+  updateCategory(): Promise<void> {
+    throw new Error("Method not implemented.");
   }
 }
