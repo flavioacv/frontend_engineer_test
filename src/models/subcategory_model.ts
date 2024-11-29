@@ -1,17 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export default class SubCategoryModel {
-    constructor(readonly id: string, readonly name: string) {
-    }
-//  // Método estático para criar uma instância de SubCategoryModel a partir de um objeto JSON
-//  static fromJson(json: any): SubCategoryModel {
-//   return new SubCategoryModel(json.id, json.name);
-// }
+  constructor(readonly id: string, public name: string) { }
 
-// // Método para converter uma instância de SubCategoryModel para um objeto JSON
-// toJson(): object {
-//   return {
-//     id: this.id,
-//     name: this.name
-//   };
-// }
 
+  toMap(): Record<string, any> {
+    return {
+      id: this.id,
+      name: this.name,
+    };
+  }
+
+
+  static fromMap(map: Record<string, any>): SubCategoryModel {
+    return new SubCategoryModel(map.id, map.name);
+  }
 }
