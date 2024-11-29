@@ -111,7 +111,7 @@ function removerCategoria(index: number) {
 }
 // Função para navegar para outra rota
 const backButton = () => {
-  router.push({ name: 'Category' }); // Nome da rota (deve estar definida no seu arquivo de rotas)
+  router.back(); // Nome da rota (deve estar definida no seu arquivo de rotas)
 };
 </script>
 

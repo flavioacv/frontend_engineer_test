@@ -9,16 +9,28 @@
       <p style="color: #586893;font-weight: 500;">
         Ao usar as categorias e subcategorias do catálogo, você ajuda seus clientes a encontrarem os produtos desejados.
       </p>
-      <!-- Botão Criar Categorias -->
-      <button v-if="categorias.length === 0" class="btn btn-custom rounded-pill d-flex align-items-center mt-4"
-        @click="navegarParaCriarCategorias">
-        Criar categorias
-        <i class="bi bi-plus ms-2" style="font-size: 2rem"></i>
-      </button>
-      <div v-else>
-        <Menu @click="navegarParaCriarCategorias" categoryName="Categorias" :categoryCount="categorias.length"></Menu>
-        <Menu @click="navegarParaCriarSubCategorias" categoryName="Subcategorias"></Menu>
+
+
+      <!-- Shimmer de carregamento -->
+      <div v-if="isLoading">
+        <Shimmer style="height: 50px; margin-bottom: 10px; border-radius: 20px; padding: 35px 0px;" />
+        <Shimmer style="height: 50px;  margin-bottom: 20px; border-radius: 20px; padding: 35px 0px;" />
+
+
       </div>
+      <div v-else>
+        <!-- Botão Criar Categorias -->
+        <button v-if="categorias.length === 0" class="btn btn-custom rounded-pill d-flex align-items-center mt-4"
+          @click="navegarParaCriarCategorias">
+          Criar categorias
+          <i class="bi bi-plus ms-2" style="font-size: 2rem"></i>
+        </button>
+        <div v-else>
+          <Menu @click="navegarParaCriarCategorias" categoryName="Categorias" :categoryCount="categorias.length"></Menu>
+          <Menu @click="navegarParaCriarSubCategorias" categoryName="Subcategorias"></Menu>
+        </div>
+      </div>
+
     </div>
   </div>
 </template>
@@ -26,11 +38,14 @@
 <script setup lang="ts">
 import Menu from '@/components/CategoryMenuComponent.vue';
 import HeaderCustom from '@/components/HeaderCustomComponent.vue'; // Importa o Header
+import Shimmer from '@/components/ShimmerComponent.vue';
+import CategoryController from '@/controllers/category_controller';
 import { useCategoryStore } from '@/stores/category_store';
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 
+const categoryController = new CategoryController();
 
 // Instância do Vue Router
 const router = useRouter();
@@ -40,6 +55,11 @@ const categoryStore = useCategoryStore();
 
 // Computed para acessar as categorias da store
 const categorias = computed(() => categoryStore.getCategory);
+const isLoading = computed(() => categoryStore.isLoading);
+
+onMounted(async () => {
+  await categoryController.loadCategories();
+})
 
 // Função para navegar para outra rota
 const navegarParaCriarCategorias = () => {
