@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex align-items-center justify-content-between py-3">
     <!-- Botão ou ícone na esquerda -->
-    <button class="btn p-0 btn-custom" :style="{ color: iconBack ? '#DA3468' : '#FFFFFF' }" @click="iconClick">
+    <button class="btn p-0 btn-custom" :style="{ color: iconBack ? '#DA3468' : 'transparent' }" @click="iconClick">
       <i class="bi bi-arrow-left icon-large"></i>
     </button>
 
@@ -9,7 +9,7 @@
     <h1 class="fs-5 mb-0 text-center flex-grow-1" style="color: #29354F;">{{ title }}</h1>
 
     <!-- Placeholder para botão direito -->
-    <button class="btn p-0" style="color: #FFFFFF">
+    <button class="btn p-0" style="color: transparent">
       <i class="bi bi-arrow-left icon-large"></i>
     </button>
   </div>
