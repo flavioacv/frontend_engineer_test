@@ -3,7 +3,7 @@
     <!-- Nome da categoria -->
     <div><span class="text-dark" style="font-weight: 500;">{{ categoryName }}</span> <span v-if="categoryCount"
         class="badge rounded-pill ms-3"
-        style="background-color: #DDE2EF; color: #586893; font-size: 18px; padding: 5px 15px; ">{{ categoryCount
+        style="background-color: #DDE2EF; color: #586893; font-size: 18px; padding: 5px 15px; font-weight: 500; ">{{ categoryCount
         }}</span>
     </div>
 
