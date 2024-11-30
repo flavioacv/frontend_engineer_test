@@ -1,3 +1,4 @@
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <template>
   <div class=" col-12 col-sm-10 col-md-8 col-lg-8  d-flex flex-column">
     <!-- Header -->
@@ -12,7 +13,10 @@
 
         <button class="btn rounded-pill" style="padding: 10px 30px;"
           :class="novaCategoria === '' ? 'btn-disabled' : 'btn-enabled'" @click="adicionarCategoria">
-          Criar
+          <span v-if="!isLoading">Criar</span>
+          <span v-else>
+            <i class="spinner-border spinner-border-sm text-light" role="status" aria-hidden="true"></i>
+          </span>
         </button>
       </div>
 
@@ -44,20 +48,21 @@
               </div>
             </div>
           </div>
-
-
         </transition-group>
       </div>
     </div>
+    <ToastComponent :toast-message="toastMessage" :toast-class="toastClass"></ToastComponent>
   </div>
 </template>
 
 <script setup lang="ts">
 import CategoryItem from '@/components/CategoryItemComponent.vue'; // Importa o componente CategoryItem
 import HeaderCustom from '@/components/HeaderCustomComponent.vue'; // Importa o Header
-import CategoryModel from '@/models/category_model';
+import ToastComponent from '@/components/ToastComponent.vue'; // Importa o Header
+import type CategoryController from '@/controllers/category_controller';
 import { useCategoryStore } from '@/stores/category_store';
-import { computed, ref, watch } from 'vue';
+import * as bootstrap from 'bootstrap';
+import { computed, inject, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 // Instância do Vue Router
@@ -65,12 +70,18 @@ const router = useRouter();
 
 // Estado local
 const novaCategoria = ref('');
+const toastMessage = ref(''); // Mensagem que será exibida no Toast
+const toastClass = ref('');
 
 // Acessa a store do Pinia
 const categoryStore = useCategoryStore();
 
 // Computed para acessar as categorias da store
 const categorias = computed(() => categoryStore.getCategory);
+const isLoading = computed(() => categoryStore.isLoading);
+
+
+const categoryController = inject<CategoryController>('categoryController');
 
 // Controle de edição por categoria
 const isEditing = ref<boolean[]>([]);
@@ -80,17 +91,30 @@ watch(categorias, (newCategorias) => {
   isEditing.value = new Array(newCategorias.length).fill(false);
 }, { immediate: true });
 
+watch(() => categoryStore.getError, (error) => {
+  if (error) {
+    showToast(error, 'danger');
+  }
+});
+
 
 function toggleEdit(index: number) {
   isEditing.value[index] = !isEditing.value[index];
 }
 
 // Função para adicionar categoria (com integração ao Pinia)
-function adicionarCategoria() {
+async function adicionarCategoria() {
   if (novaCategoria.value.trim() !== '') {
-    const nova = new CategoryModel(novaCategoria.value.trim(), '', []); // Ajuste o modelo de acordo com sua estrutura
-    categoryStore.setCategories([...categorias.value, nova]);
+    if (!categoryController) {
+      throw new Error('CategoryController not provided');
+    }
+    //const nova = new CategoryModel(novaCategoria.value.trim(), '', []); // Ajuste o modelo de acordo com sua estrutura
+    //categoryStore.setCategories([...categorias.value, nova]);
+    await categoryController.createCategory((novaCategoria.value.trim()));
     novaCategoria.value = '';
+
+
+
   }
 }
 
@@ -108,6 +132,21 @@ function adicionarCategoria() {
 function removerCategoria(index: number) {
   const categoriasAtualizadas = categorias.value.filter((_, i) => i !== index);
   categoryStore.setCategories(categoriasAtualizadas);
+}
+
+
+
+// Função para exibir o Toast
+function showToast(message: string, type: 'success' | 'danger') {
+  toastMessage.value = message;
+  toastClass.value = type === 'success' ? 'text-success' : 'text-danger';
+
+  // Exibe o Toast
+  const toastElement = document.getElementById('liveToast');
+  if (toastElement) {
+    const toastInstance = new bootstrap.Toast(toastElement);
+    toastInstance.show();
+  }
 }
 // Função para navegar para outra rota
 const backButton = () => {
