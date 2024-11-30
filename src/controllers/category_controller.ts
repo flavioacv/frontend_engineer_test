@@ -12,14 +12,6 @@ export default class CategoryController {
     this.categoryRepository = categoryRepository;
   }
 
-
-  // getCategory(refresh: Boolean = false) {
-  //     if (this.$state.categories && this.$state.categories.length > 0 && !refresh) {
-  //         return this.categories;
-  //     }
-
-  // }
-
   async loadCategories(refresh: boolean = false): Promise<void> {
     if (this.categoryStore.getCategory.length === 0 || refresh) {
       this.categoryStore.isLoading = true;
@@ -38,7 +30,26 @@ export default class CategoryController {
         this.categoryStore.isLoading = false;
       }
     }
+  }
 
+  async createCategory(name: string): Promise<void> {
+    this.categoryStore.isLoading = true;
+    this.categoryStore.error = null;
+    try {
+      const resCategory = await this.categoryRepository.createCategory(name);
+      this.categoryStore.setCategory(resCategory);
+    } catch (error) {
+      if (error instanceof AppException) {
+        this.categoryStore.error = error.message.includes('Category already exists')
+          ? 'A categoria já existe.'
+          : error.message
+      } else {
+        this.categoryStore.error = 'An unexpected error occurred.';
+      }
+      console.error(this.categoryStore.error, error);
+    } finally {
+      this.categoryStore.isLoading = false;
+    }
 
   }
 }
