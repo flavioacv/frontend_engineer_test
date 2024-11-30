@@ -15,27 +15,55 @@ export default class CategoryRepositoryImpl implements CategoryRepository {
 
   async getCategories(): Promise<CategoryModel[]> {
     try {
-      const rawCategories = await this.httpService.get<any[]>('/categories');
-      const categories = rawCategories.map(CategoryModel.fromMap);
+      const resCategories = await this.httpService.get<any[]>('/categories');
+      const categories = resCategories.map(CategoryModel.fromMap);
       return categories;
     } catch (error) {
       if (error instanceof AppException) {
-        // Enriquecendo a mensagem de erro com informações sobre o repositório
         throw new AppException(
           'RepositoryError',
           `Failed to fetch categories: ${error.message}`,
           error.stack
         );
       }
-      //Re-lança erros não tratados
       throw error;
     }
   }
 
-  createCategory(): Promise<void> {
-    throw new Error("Method not implemented.");
+  async createCategory(name: string): Promise<CategoryModel> {
+    try {
+      const resCategory = await this.httpService.post<any>('/categories', {
+        "name": name,
+      });
+      const category = CategoryModel.fromMap(resCategory);
+      return category;
+    } catch (error) {
+      if (error instanceof AppException) {
+        throw new AppException(
+          'RepositoryError',
+          `Failed to create category: ${error.message}`,
+          error.stack
+        );
+      }
+      throw error;
+    }
   }
-  updateCategory(): Promise<void> {
-    throw new Error("Method not implemented.");
+  async updateCategory(id: string, name: string): Promise<CategoryModel> {
+    try {
+      const resCategory = await this.httpService.put<any>(`/categories/${id}`, {
+        "name": name,
+      });
+      const category = CategoryModel.fromMap(resCategory);
+      return category;
+    } catch (error) {
+      if (error instanceof AppException) {
+        throw new AppException(
+          'RepositoryError',
+          `Failed to update category: ${error.message}`,
+          error.stack
+        );
+      }
+      throw error;
+    }
   }
 }
