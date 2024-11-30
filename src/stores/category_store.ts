@@ -13,6 +13,9 @@ export const useCategoryStore = defineStore('category', {
     setCategories(categories: CategoryModel[]) {
       this.categories = categories;
     },
+    setCategory(category: CategoryModel) {
+      this.categories.push(category);
+    },
     setLoading(value: boolean) {
       this.isLoading = value;
     },
