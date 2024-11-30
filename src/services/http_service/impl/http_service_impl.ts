@@ -44,7 +44,7 @@ export default class HttpServiceImpl implements HttpService {
 
     try {
 
-      const response = await this.axiosInstance.put<T>(url, data, { params });
+      const response = await this.axiosInstance.patch<T>(url, data, { params });
       return response.data;
     } catch (error) {
       if (this.isAxiosError(error)) {
@@ -71,28 +71,37 @@ export default class HttpServiceImpl implements HttpService {
 
   private handleHttpError(error: AxiosError): never {
     if (error.response) {
-      // Erro com resposta do servidor
+
+      const status = error.response.status;
+      const statusText = error.response.statusText;
+      const data = error.response.data as any;
+
+      // Mensagem personalizada com base no conteúdo da resposta
+      const message = data?.message || `HTTP ${status}: ${statusText}`;
+      const type = data?.type || 'UnknownError';
+
       throw new AppException(
-        'HttpError',
-        `HTTP ${error.response.status}: ${error.response.statusText}`,
+        type,
+        message,
         error.stack
       );
     } else if (error.request) {
-      // Nenhuma resposta foi recebida
+
       throw new AppException(
         'HttpRequestError',
-        'No response received from the server',
+        'No response received from the server. Please check your connection or try again later.',
         error.stack
       );
     } else {
-      // Erro na configuração da requisição
+
       throw new AppException(
         'HttpClientError',
-        error.message,
+        `Unexpected error: ${error.message}`,
         error.stack
       );
     }
   }
+
 }
 
 
