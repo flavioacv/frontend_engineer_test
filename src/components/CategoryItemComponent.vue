@@ -1,7 +1,7 @@
 <template>
   <div class="category-item d-flex align-items-center justify-content-between p-3 mb-2 ">
     <!-- Nome da categoria -->
-    <span class="text-dark" style="font-weight: 500;">{{ categoryName }}</span>
+    <span class="text-dark" style="font-size: 16px;font-weight: 500;">{{ categoryName }}</span>
 
     <!-- Botões de ação (editar e excluir) -->
     <div class="dropdown">

@@ -1,7 +1,7 @@
 <template>
   <div class="category-item d-flex align-items-center justify-content-between p-3 mb-2 e">
     <!-- Nome da categoria -->
-    <span class="text-dark" style="font-weight: 500; color: #DA3468 !important;">{{ categoryName }}</span>
+    <span class="text-dark" style="font-size: 16px;font-weight: 500; color: #DA3468 !important;">{{ categoryName }}</span>
 
     <!-- Botões de ação (editar e excluir) -->
     <a class="btn btn-sm  me-2  " style="border: none;" role="button">

@@ -2,7 +2,7 @@
   <div class="card shadow-sm py-2">
     <div class="card-header d-flex justify-content-between align-items-center" @click="isOpen = !isOpen"
       style="border: none;background-color: transparent;">
-      <span class="fw-bold">{{ categoryName }}</span>
+      <span style="font-size: 16px;" class="fw-bold">{{ categoryName }}</span>
       <button class="btn btn-link p-0" type="button" @click="isOpen = !isOpen">
 
         <i v-if="isOpen" class="bi bi-chevron-up" style="font-size: 1.2rem ; color: #DA3468;"></i>
@@ -45,7 +45,7 @@
             <!-- Modo de edição -->
             <div class=" d-flex align-items-center w-100">
               <input v-model="inputValue" autofocus type="text" class="form-control  p-2 no-focus-outline"
-                maxlength="48" style="border: none; font-weight: 600; " placeholder="Subcategoria" />
+                maxlength="48" style="border: none; font-weight: 600; font-size: 16px;" placeholder="Subcategoria" />
               <button @click="() => { isCreated = false }" class="btn  me-1 rounded-pill"
                 style="background-color: #FFE2EB; color: #DA3468; border: none;">
                 <i class="bi bi-x"></i>
