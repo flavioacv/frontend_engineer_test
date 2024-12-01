@@ -1,4 +1,5 @@
 import type CategoryModel from '@/models/category_model';
+import type SubcategoryModel from '@/models/subcategory_model';
 import { defineStore } from 'pinia';
 
 
@@ -15,6 +16,19 @@ export const useCategoryStore = defineStore('category', {
     },
     setCategory(category: CategoryModel) {
       this.categories.push(category);
+    },
+
+    setSubcategories(categoryId: string, subcategories: SubcategoryModel[]) {
+      const category = this.categories.find(item => item.id === categoryId);
+      if (category) {
+        category.subCategory = subcategories;
+      }
+    },
+    setSubcategory(categoryId: string, subcategory: SubcategoryModel) {
+      const category = this.categories.find(item => item.id === categoryId);
+      if (category) {
+        category.subCategory.push(subcategory);
+      }
     },
     setLoading(value: boolean) {
       this.isLoading = value;
