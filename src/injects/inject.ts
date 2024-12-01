@@ -5,7 +5,7 @@ import type HttpService from '@/services/http_service/http_service';
 import HttpServiceImpl from '@/services/http_service/impl/http_service_impl';
 import { provide } from 'vue';
 
-export function setupCategoryInjection() {
+export function setupInjection() {
   const httpService: HttpService = new HttpServiceImpl();
   const categoryRepository: CategoryRepository = new CategoryRepositoryImpl(httpService);
   const categoryController: CategoryController = new CategoryController(categoryRepository);

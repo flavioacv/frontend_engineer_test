@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
-import { setupCategoryInjection } from './injects/category_inject';
+import { setupInjection } from './injects/inject';
 
 // Chama a configuração de injeção
-setupCategoryInjection();
+setupInjection();
 
 </script>
 
