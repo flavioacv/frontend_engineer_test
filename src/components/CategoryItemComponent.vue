@@ -17,7 +17,8 @@
         <li><a class="dropdown-item mb-2 " style="font-weight: 600;" href="#" @click="handleEdit"><i
               class="bi bi-pen mx-2" style="color: #DA3468;"></i>Renomear</a></li>
         <li><a class="dropdown-item " style="font-weight: 600;" href="#" data-bs-target="#ModalDelete"
-            data-bs-toggle="modal"><i class="bi bi-trash3 mx-2" style="color: #DA3468;"></i>Excluir</a></li>
+            @click="handleGetIdToDelete" data-bs-toggle="modal"><i class="bi bi-trash3 mx-2"
+              style="color: #DA3468;"></i>Excluir</a></li>
       </ul>
     </div>
     <DialogDelete :onConfirm="handleDelete" :textConfirm="textConfirm" :textCancel="textCancel" :title="title"
@@ -54,16 +55,18 @@ defineProps({
 });
 
 // Emitir eventos
-const emit = defineEmits(['edit', 'delete']);
+const emit = defineEmits(['edit', 'delete', 'getIdToDelete']);
 
 // Funções de evento para editar e excluir
 function handleEdit() {
   emit('edit');
 }
 
-
 function handleDelete() {
   emit('delete');
+}
+function handleGetIdToDelete() {
+  emit('getIdToDelete');
 }
 
 </script>
