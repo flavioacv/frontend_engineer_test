@@ -2,17 +2,19 @@
 <template>
   <div class=" col-12 col-sm-10 col-md-8 col-lg-8  d-flex flex-column">
     <!-- Header -->
-    <HeaderCustom title="Categorias" :iconBack=true :onClick="backButton" />
+    <HeaderCustom title="Categorias" :iconBack=true :onClick="backButton" aria-label="Voltar para a página anterior" />
 
     <!-- Conteúdo -->
     <div class="text-center mt-4 flex-grow-1 d-flex flex-column justify-content-center align-items-bottom">
       <!-- Input para criar categoria -->
       <div class="w-100 d-flex mb-5">
         <input v-model="novaCategoria" type="text" class="form-control rounded-pill p-3 py-3 me-2" maxlength="48"
-          style="border-color:#DDE2EF ; font-weight: 600;" placeholder="Crie uma categoria" />
+          style="border-color:#DDE2EF ; font-weight: 600;" placeholder="Crie uma categoria"
+          :aria-invalid="novaCategoria.trim() === '' ? 'true' : 'false'" aria-labelledby="novaCategoria" />
 
         <button class="btn rounded-pill" style="padding: 10px 30px;"
-          :class="novaCategoria === '' ? 'btn-disabled' : 'btn-enabled'" @click="adicionarCategoria">
+          :class="novaCategoria === '' ? 'btn-disabled' : 'btn-enabled'" @click="adicionarCategoria"
+          aria-label="Criar nova categoria">
           <span v-if="!isLoading">Criar</span>
           <span v-else>
             <i class="spinner-border spinner-border-sm text-light" role="status" aria-hidden="true"></i>
@@ -21,7 +23,7 @@
       </div>
 
       <!-- Mensagem caso não haja categorias -->
-      <p v-if="categorias.length === 0" class=" mt-5" style="color: #8693B4;">
+      <p v-if="categorias.length === 0" class=" mt-5" style="color: #8693B4;" role="status">
         <strong style="color: #586893;">Ainda não existem categorias criadas</strong><br />
         Digite no campo acima as categorias que <br> deseja criar
       </p>
@@ -29,21 +31,24 @@
       <!-- Lista de categorias -->
       <div v-if="categorias.length > 0" class="">
         <transition-group name="fade" tag="div">
-          <div v-for="(categoria, index) in categorias" :key="index">
+          <div v-for="(categoria, index) in categorias" :key="index" aria-label="Item de categoria">
             <CategoryItem v-if="!isEditing[index]" :key="index" :categoryName="categoria.name"
               :onEdit="() => toggleEdit(index)" :onGetIdToDelete="() => { indexDeleteCategoria = index }"
               :onDelete="() => { removerCategoria() }" />
-            <div v-else class=" category-menu d-flex align-items-center justify-content-between p-3 mb-2 border">
+            <div v-else class=" category-menu d-flex align-items-center justify-content-between p-3 mb-2 border"
+              aria-labelledby="editCategoria">
               <!-- Modo de edição -->
               <div class=" d-flex align-items-center w-100 ">
                 <input v-model="editCategoria" autofocus type="text" class="form-control p-2 no-focus-outline"
-                  maxlength="48" style="border: none; font-weight: 600; " placeholder="Categoria" />
+                  maxlength="48" style="border: none; font-weight: 600; " placeholder="Categoria"
+                  aria-labelledby="editCategoria" />
                 <button @click="() => { toggleEdit(index) }" class="btn  me-1 rounded-pill"
-                  style="background-color: #FFE2EB; color: #DA3468; border: none;">
+                  style="background-color: #FFE2EB; color: #DA3468; border: none;"
+                  aria-label="Cancelar edição da categoria">
                   <i class="bi bi-x"></i>
                 </button>
                 <button @click="() => { editarCategoria(index) }" class="btn btn-success rounded-pill"
-                  style="background-color: #F24F82; border: none;">
+                  style="background-color: #F24F82; border: none;" aria-label="Salvar edição da categoria">
                   <i class="bi bi-check2"></i>
                 </button>
               </div>
@@ -52,7 +57,8 @@
         </transition-group>
       </div>
     </div>
-    <ToastComponent :toast-message="toastMessage" :toast-class="toastClass"></ToastComponent>
+    <ToastComponent :toast-message="toastMessage" :toast-class="toastClass" aria-live="assertive" aria-atomic="true">
+    </ToastComponent>
   </div>
 </template>
 
@@ -166,9 +172,22 @@ const backButton = () => {
   border: none;
   font-weight: 600;
 }
+/* Desativa mudanças no hover */
+.btn-enabled:hover {
+  background-color: #DA3468;
+  color: white;
+  border: none;
+  font-weight: 600;
+}
 
 /* Estilo para o estado "disable" */
 .btn-disabled {
+  background-color: #DDE2EF;
+  color: #8693B4;
+  border: none;
+  font-weight: 600;
+}
+.btn-disabled:hover {
   background-color: #DDE2EF;
   color: #8693B4;
   border: none;
@@ -207,5 +226,22 @@ input:focus::placeholder {
   color: black;
   opacity: 1;
   /* Garante opacidade total */
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  overflow: hidden;
+}
+
+input:focus,
+button:focus {
+  outline: 2px solid #4d90fe;
+
 }
 </style>
