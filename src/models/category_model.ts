@@ -9,13 +9,13 @@ export default class CategoryModel {
   ) { }
 
 
-  toMap(): Record<string, any> {
-    return {
-      name: this.name,
-      id: this.id,
-      subCategory: this.subCategory.map((sub) => sub.toMap()), // Converter cada subcategoria
-    };
-  }
+  // toMap(): Record<string, any> {
+  //   return {
+  //     name: this.name,
+  //     id: this.id,
+  //     subCategory: this.subCategory.map((sub) => sub.toMap()), // Converter cada subcategoria
+  //   };
+  // }
 
 
   static fromMap(map: Record<string, any>): CategoryModel {

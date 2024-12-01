@@ -4,5 +4,6 @@ export default interface CategoryRepository {
   getCategories(): Promise<CategoryModel[]>;
   createCategory(name: string): Promise<CategoryModel>;
   updateCategory(id: string,name: string): Promise<CategoryModel>;
+  deleteCategory(id: string): Promise<void>;
 
 }

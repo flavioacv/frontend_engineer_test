@@ -30,18 +30,19 @@
       <div v-if="categorias.length > 0" class="">
         <transition-group name="fade" tag="div">
           <div v-for="(categoria, index) in categorias" :key="index">
-            <CategoryItem v-if="!isEditing[index]" :categoryName="categoria.name" :onEdit="() => toggleEdit(index)"
-              :onDelete="() => removerCategoria(index)" />
+            <CategoryItem v-if="!isEditing[index]" :key="index" :categoryName="categoria.name"
+              :onEdit="() => toggleEdit(index)" :onGetIdToDelete="() => { indexDeleteCategoria = index }"
+              :onDelete="() => { removerCategoria() }" />
             <div v-else class=" category-menu d-flex align-items-center justify-content-between p-3 mb-2 border">
               <!-- Modo de edição -->
               <div class=" d-flex align-items-center w-100 ">
-                <input v-model="categoria.name" autofocus type="text" class="form-control p-2 no-focus-outline"
+                <input v-model="editCategoria" autofocus type="text" class="form-control p-2 no-focus-outline"
                   maxlength="48" style="border: none; font-weight: 600; " placeholder="Categoria" />
                 <button @click="() => { toggleEdit(index) }" class="btn  me-1 rounded-pill"
                   style="background-color: #FFE2EB; color: #DA3468; border: none;">
                   <i class="bi bi-x"></i>
                 </button>
-                <button @click="() => { toggleEdit(index) }" class="btn btn-success rounded-pill"
+                <button @click="() => { editarCategoria(index) }" class="btn btn-success rounded-pill"
                   style="background-color: #F24F82; border: none;">
                   <i class="bi bi-check2"></i>
                 </button>
@@ -70,6 +71,8 @@ const router = useRouter();
 
 // Estado local
 const novaCategoria = ref('');
+const editCategoria = ref('');
+const indexDeleteCategoria = ref(0);
 const toastMessage = ref(''); // Mensagem que será exibida no Toast
 const toastClass = ref('');
 
@@ -99,7 +102,9 @@ watch(() => categoryStore.getError, (error) => {
 
 
 function toggleEdit(index: number) {
+
   isEditing.value[index] = !isEditing.value[index];
+  editCategoria.value = categorias.value[index].name;
 }
 
 // Função para adicionar categoria (com integração ao Pinia)
@@ -118,20 +123,20 @@ async function adicionarCategoria() {
   }
 }
 
-// // Editar categoria
-// function editarCategoria(index: number) {
-//   const novoNome = prompt('Renomear categoria:', categorias.value[index]?.name || '');
-//   if (novoNome && novoNome.trim() !== '') {
-//     const categoriasAtualizadas = [...categorias.value];
-//     categoriasAtualizadas[index] = { ...categoriasAtualizadas[index], name: novoNome.trim() };
-//     categoryStore.setCategories(categoriasAtualizadas);
-//   }
-// }
+// Editar categoria
+async function editarCategoria(index: number) {
+  if (editCategoria.value && editCategoria.value.trim() !== '') {
+    if (!categoryController) {
+      throw new Error('CategoryController not provided');
+    }
+    await categoryController.updateCategory(index, categorias.value[index], editCategoria.value.trim());
+    isEditing.value[index] = false;
+  }
+}
 
 // Remover categoria
-function removerCategoria(index: number) {
-  const categoriasAtualizadas = categorias.value.filter((_, i) => i !== index);
-  categoryStore.setCategories(categoriasAtualizadas);
+async function removerCategoria() {
+  await categoryController?.deleteCategory(indexDeleteCategoria.value, categorias.value[indexDeleteCategoria.value]);
 }
 
 

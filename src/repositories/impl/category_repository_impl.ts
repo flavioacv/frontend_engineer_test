@@ -66,4 +66,21 @@ export default class CategoryRepositoryImpl implements CategoryRepository {
       throw error;
     }
   }
+
+  async deleteCategory(id: string): Promise<void> {
+    try {
+      await this.httpService.delete<any>(`/categories/${id}`);
+
+    } catch (error) {
+      if (error instanceof AppException) {
+        throw new AppException(
+          'RepositoryError',
+          `Failed to update category: ${error.message}`,
+          error.stack
+        );
+      }
+      throw error;
+    }
+  }
+
 }
