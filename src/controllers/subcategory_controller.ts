@@ -1,5 +1,4 @@
 import AppException from "@/exception/app_exception";
-import type SubcategoryModel from "@/models/subcategory_model";
 import type SubcategoryRepository from "@/repositories/subcategory_repository";
 
 import { useCategoryStore } from "@/stores/category_store";
@@ -14,7 +13,12 @@ export default class SubcategoryController {
   }
 
   async loadSubcategories(parentId: string, refresh: boolean = false): Promise<void> {
-    if (this.categoryStore.getCategory.length === 0 || refresh) {
+    const category = this.categoryStore.categories.find((item) => item.id === parentId);
+    if (!category) {
+      throw new Error('Categoria não encontrada');
+    }
+    ;
+    if (category.subCategory.length === 0 || refresh) {
       this.categoryStore.isLoading = true;
       this.categoryStore.error = null;
       try {
@@ -57,13 +61,12 @@ export default class SubcategoryController {
   async updateSubcategory(
     categoryIndex: number,
     subcategoryIndex: number,
-    subcategory: SubcategoryModel,
     name: string
   ): Promise<void> {
     this.categoryStore.error = null;
-
     try {
-
+      const category = this.categoryStore.categories[categoryIndex]
+      const subcategory = category.subCategory[subcategoryIndex];
       const updatedSubcategory = await this.subcategoryRepository.updateSubcategory(subcategory.id, name);
       // Clona as categorias para evitar mutação direta
       const updatedCategories = [...this.categoryStore.categories];
@@ -118,12 +121,8 @@ export default class SubcategoryController {
       await this.subcategoryRepository.deleteSubcategory(targetSubcategory.id);
 
       // Clona as categorias e remove a subcategoria do array da categoria
-      const updatedCategories = [...this.categoryStore.categories];
-      updatedCategories[categoryIndex] = {
-        ...targetCategory,
-        subCategory: targetCategory.subCategory.filter((_, index) => index !== subcategoryIndex),
-      };
-      this.categoryStore.setCategories(updatedCategories);
+      const updatedSubcategories = targetCategory.subCategory.filter((_, index) => index !== subcategoryIndex)
+      this.categoryStore.setSubcategories(targetCategory.id, updatedSubcategories);
     } catch (error) {
       if (error instanceof AppException) {
         // Trata erros de negócio

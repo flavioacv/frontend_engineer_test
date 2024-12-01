@@ -15,7 +15,9 @@
         <transition-group name="fade" tag="div">
           <SubcategoriaItem v-for="(categoria, index) in categorias" :key="index" :categoryName="categoria.name"
             :category="categoria" :onCreate="(value: string) => adicionarSubcategoria(value, index)"
-            :onDelete="(indexSub: number) => { removeSubcategory(index, indexSub) }" />
+            :onGetIdEdit="(index) => { editIndexCategory = index }"
+            :onDelete="(indexSub: number) => { removeSubcategory(index, indexSub) }"
+            :onEdit="(payload) => { editarSubcategoria(payload) }" :onTap="(parentId) => { onTap(parentId) }" />
         </transition-group>
       </div>
     </div>
@@ -26,56 +28,72 @@
 <script setup lang="ts">
 import SubcategoriaItem from '@/components/CardSubcategoryComponent.vue'; // Importa o componente CategoryIte
 import HeaderCustom from '@/components/HeaderCustomComponent.vue'; // Importa o Header
-import SubCategoryModel from '@/models/subcategory_model';
+import type SubcategoryController from '@/controllers/subcategory_controller';
 import { useCategoryStore } from '@/stores/category_store';
-import { computed } from 'vue';
+import { computed, inject, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 // Instância do Vue Router
 const router = useRouter();
 
-
+const subcategoryController = inject<SubcategoryController>('subcategoryController');
 
 // Acessa a store do Pinia
 const categoryStore = useCategoryStore();
 
+const editIndexCategory = ref(0);
+
 // Computed para acessar as categorias da store
 const categorias = computed(() => categoryStore.getCategory);
 
+
 // Função para adicionar categoria (com integração ao Pinia)
-function adicionarSubcategoria(value: string, index: number) {
+async function adicionarSubcategoria(value: string, index: number) {
   // Solicita o nome da nova subcategoria
   const novoNome = value;
 
   if (novoNome && novoNome.trim() !== '') {
     // Faz uma cópia da lista de categorias para preservar a imutabilidade
-    const categoriasAtualizadas = [...categorias.value];
 
-    // Adiciona a nova subcategoria dentro da categoria correspondente
-    if (!categoriasAtualizadas[index].subCategory) {
-      // Garante que a subCategory exista como um array
-      categoriasAtualizadas[index].subCategory = [];
+
+    if (!subcategoryController) {
+      throw new Error('SubcategoryController não foi provido!');
     }
-    categoriasAtualizadas[index].subCategory.push(new SubCategoryModel('', novoNome.trim()));
-
-    // Atualiza o store ou estado com as categorias atualizadas
-    categoryStore.setCategories(categoriasAtualizadas);
-    console.log("Due certoo");
+    await subcategoryController.createSubcategory(categorias.value[index].id, novoNome);
   }
 }
-// // Função para adicionar uma nova subcategoria
-// const addSubcategory = (): void => {
-//   const newSubcategory = prompt("Digite o nome da nova subcategoria:");
-//   if (newSubcategory) {
-//     subcategories.value.push(newSubcategory);
-//   }
-// };
+// Editar categoria
+
+async function editarSubcategoria(payload: { index: number, valueEdit: string }) {
+
+  const { index, valueEdit } = payload;
+
+  if (valueEdit && valueEdit.trim() !== '') {
+    if (!subcategoryController) {
+      throw new Error('CategoryController not provided');
+    }
+    await subcategoryController.updateSubcategory(editIndexCategory.value, index, valueEdit.trim());
+
+  }
+}
+
+async function onTap(parentId: string) {
+  if (!subcategoryController) {
+    throw new Error('SubcategoryController não foi provido!');
+  }
+  await subcategoryController.loadSubcategories(parentId);
+}
 
 // Função para remover uma subcategoria pelo índice
-const removeSubcategory = (indexC: number, indexSub: number): void => {
-  console.log(indexC, indexSub)
-  const categoriasAtualizadas = [...categorias.value];
-  categoriasAtualizadas[indexC].subCategory.splice(indexSub, 1);
+async function removeSubcategory(indexC: number, indexSub: number) {
+  // console.log(indexC, indexSub)
+  // const categoriasAtualizadas = [...categorias.value];
+  // categoriasAtualizadas[indexC].subCategory.splice(indexSub, 1);
+
+  if (!subcategoryController) {
+    throw new Error('SubcategoryController não foi provido!');
+  }
+  await subcategoryController.deleteSubcategory(indexC, indexSub);
 
 };
 
